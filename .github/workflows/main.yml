@@ -17,7 +17,7 @@ jobs:
       run: docker-compose pull
 
     - name: Restore docker layer cache
-      uses: satackey/action-docker-layer-caching@v0.0.8
+      uses: satackey/action-docker-layer-caching@v0.0.10
       continue-on-error: true
 
     - name: Build image
@@ -29,18 +29,18 @@ jobs:
     - name: Run tests using postgres
       run: USE_DOCKER=1 ./test_postgres
 
-    - name: Publish image to Docker Hub
-      run: |
-        echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-        docker push beeracademy/web
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    # - name: Publish image to Docker Hub
+    #   run: |
+    #     echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+    #     docker push beeracademy/web
+    #   env:
+    #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Deploy image to production
-      run: |
-        for url in $WEBHOOK_URLS; do
-          curl --fail -X POST "$url"
-        done
-      env:
-        WEBHOOK_URLS: ${{ secrets.WEBHOOK_URLS }}
+    # - name: Deploy image to production
+    #   run: |
+    #     for url in $WEBHOOK_URLS; do
+    #       curl --fail -X POST "$url"
+    #     done
+    #   env:
+    #     WEBHOOK_URLS: ${{ secrets.WEBHOOK_URLS }}
